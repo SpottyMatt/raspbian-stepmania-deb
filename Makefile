@@ -20,18 +20,22 @@ stepmania-%: STEPMANIA_VERSION=$(STEPMANIA_VERSION_NUM)
 else
 stepmania-%: STEPMANIA_VERSION=$(STEPMANIA_VERSION_NUM)-$(STEPMANIA_DATE)
 endif
-stepmania-%: target/$(FULLPATH)/debian/DEBIAN/control
+stepmania-%: target/$(FULLPATH)/debian/DEBIAN/control target/$(FULLPATH)/debian/opt/$(SMPATH)/GtkModule.so target/$(FULLPATH)/debian/opt/$(SMPATH)/stepmania
 	echo "BUILDING detected target [$@]; fullpath = [$(FULLPATH)]; prereqs = [$^]"
-	cd target/$(FULLPATH) && pwd && dpkg-deb --build debian
+	cd target/$(FULLPATH) && fakeroot dpkg-deb --build debian
 	mv target/$(FULLPATH)/debian.deb target/stepmania-$(STEPMANIA_VERSION)-$(shell arch).deb
 	lintian target/stepmania-$(STEPMANIA_VERSION)-$(shell arch).deb
 
+.PHONY: target/$(FULLPATH)/debian/DEBIAN/control
 target/$(FULLPATH)/debian/DEBIAN/control:
 	echo "BUILDING ctrlfile [$@]"
 	echo "sm version: $(STEPMANIA_VERSION) / hash: $(STEPMANIA_HASH) / date: $(STEPMANIA_DATE)"
 	cat $(FULLPATH)/debian/DEBIAN/control | STEPMANIA_VERSION=$(STEPMANIA_VERSION) envsubst > target/$(FULLPATH)/debian/DEBIAN/control
 
-.PHONY: target/$(FULLPATH)/debian/DEBIAN/control
+.PHONY: target/$(FULLPATH)/debian/opt/$(SMPATH)/GtkModule.so target/$(FULLPATH)/debina/opt/$(SMPATH)/stepmania
+target/$(FULLPATH)/debian/opt/$(SMPATH)/GtkModule.so target/$(FULLPATH)/debian/opt/$(SMPATH)/stepmania:
+	echo "Stripping [$@]"
+	strip --strip-unneeded -o $@ /usr/local/$(SMPATH)/$(@F)
 
 target/stepmania:
 	git clone https://github.com/stepmania/stepmania.git target/stepmania
