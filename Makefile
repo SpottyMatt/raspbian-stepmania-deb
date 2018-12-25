@@ -32,7 +32,7 @@ target/$(FULLPATH)/debian/DEBIAN/control:
 	echo "sm version: $(STEPMANIA_VERSION) / hash: $(STEPMANIA_HASH) / date: $(STEPMANIA_DATE)"
 	cat $(FULLPATH)/debian/DEBIAN/control | STEPMANIA_VERSION=$(STEPMANIA_VERSION) envsubst > target/$(FULLPATH)/debian/DEBIAN/control
 
-.PHONY: target/$(FULLPATH)/debian/opt/$(SMPATH)/GtkModule.so target/$(FULLPATH)/debina/opt/$(SMPATH)/stepmania
+.PHONY: target/$(FULLPATH)/debian/opt/$(SMPATH)/GtkModule.so target/$(FULLPATH)/debian/opt/$(SMPATH)/stepmania
 target/$(FULLPATH)/debian/opt/$(SMPATH)/GtkModule.so target/$(FULLPATH)/debian/opt/$(SMPATH)/stepmania:
 	echo "Stripping [$@]"
 	strip --strip-unneeded -o $@ /usr/local/$(SMPATH)/$(@F)
