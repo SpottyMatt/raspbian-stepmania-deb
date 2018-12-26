@@ -1,4 +1,4 @@
-SUBDIRS := $(shell arch)/*
+'SUBDIRS := $(shell arch)/*
 PAREN := \)
 .EXPORT_ALL_VARIABLES:
 
@@ -45,7 +45,7 @@ stepmania-%: \
 # stepmania symlink on the PATH
 target/$(FULLPATH)/debian/usr/bin/stepmania:
 	mkdir -p $(@D)
-	ln -s /usr/games/$(SMPATH)/stepmania $@
+	ln -s ../games/$(SMPATH)/stepmania $@
 
 # debian control file gets envvars substituted FRESH EVERY TIME
 .PHONY: target/$(FULLPATH)/debian/DEBIAN/*

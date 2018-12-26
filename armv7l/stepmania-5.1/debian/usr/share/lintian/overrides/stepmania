@@ -1,7 +1,3 @@
-# This install not just an executable, but a whole directory tree
-# of supporting files. They need to go in a reasonable place, and that's /opt
-stepmania binary: dir-or-file-in-opt /opt/*
-
 # This binary package is GPL-licensed, but the software isn't.
 # We do not follow debian convention of symlinking to the local GPL
 stepmania binary: copyright-should-refer-to-common-license-file-for-gpl
@@ -13,20 +9,20 @@ stepmania binary: embedded-library *
 # These license files are in the final StepMania distribution.
 # They should be included, but lintian shouldn't complain about them.
 
-stepmania binary: extra-license-file opt/stepmania-5.1/Docs/Copying.MAD
-stepmania binary: extra-license-file opt/stepmania-5.1/Docs/license-ext/vlgothic/LICENSE
-stepmania binary: extra-license-file opt/stepmania-5.1/Docs/license-ext/vlgothic/LICENSE.en
+stepmania binary: extra-license-file usr/games/stepmania-5.1/Docs/Copying.MAD
+stepmania binary: extra-license-file usr/games/stepmania-5.1/Docs/license-ext/vlgothic/LICENSE
+stepmania binary: extra-license-file usr/games/stepmania-5.1/Docs/license-ext/vlgothic/LICENSE.en
 
 # Depends is a long list and allowing multiple lines
 # makes it much easier to manage & diff
 stepmania binary: multiline-field depends
 
+# This installs StepMania to /usr/games
+# but we want the stepmania binary on the $PATH so
+# we leave a symlink in /usr/bin
+stepmania binary: package-section-games-but-has-usr-bin
+
 # This was built for Raspberry Pi on the debian-based Raspbian
 # I don't know why deb doesn't know about the arm architecture.
 stepmania binary: unknown-architecture armv7l
-
-# This installs a 
-
-stepmania binary: dir-in-usr-local usr/local/bin/
-stepmania binary: file-in-usr-local usr/local/bin/stepmania
 
