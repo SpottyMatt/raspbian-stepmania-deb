@@ -1,4 +1,5 @@
-SUBDIRS := $(shell dpkg --print-architecture)/*
+ARCH := $(shell dpkg --print-architecture)
+SUBDIRS := $(ARCH)/*
 PAREN := \)
 .EXPORT_ALL_VARIABLES:
 
@@ -38,8 +39,8 @@ stepmania-%: \
 	target/$(FULLPATH)/debian/usr/games/$(SMPATH)/stepmania \
 	target/$(FULLPATH)/debian/usr/bin/stepmania
 	cd target/$(FULLPATH) && fakeroot dpkg-deb --build debian
-	mv target/$(FULLPATH)/debian.deb target/stepmania-$(STEPMANIA_VERSION)-$(shell arch).deb
-	lintian target/stepmania-$(STEPMANIA_VERSION)-$(shell arch).deb
+	mv target/$(FULLPATH)/debian.deb target/stepmania-$(STEPMANIA_VERSION)-$(ARCH).deb
+	lintian target/stepmania-$(STEPMANIA_VERSION)-$(ARCH).deb
 
 # stepmania symlink on the PATH
 target/$(FULLPATH)/debian/usr/bin/stepmania:

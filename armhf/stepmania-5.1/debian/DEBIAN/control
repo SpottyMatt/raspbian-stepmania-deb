@@ -2,7 +2,7 @@ Package: stepmania
 Version: $STEPMANIA_VERSION
 Section: contrib/games
 Priority: optional
-Architecture: armv7l
+Architecture: $ARCH
 Depends: ffmpeg (>= 7:3.2.10-1~deb9u1+rpt2), 
  libasound2 (>= 1.1.3-5+rpi3), 
  libbz2 (>= 1.0.6-8.1), 
