@@ -37,20 +37,19 @@ stepmania-%: \
 	target/$(FULLPATH)/debian/usr/share/doc/stepmania/changelog.Debian.gz \
 	target/$(FULLPATH)/debian/opt/$(SMPATH)/GtkModule.so \
 	target/$(FULLPATH)/debian/opt/$(SMPATH)/stepmania \
-	target/$(FULLPATH)/debian/usr/local/bin/stepmania
-	echo "BUILDING detected target [$@]; fullpath = [$(FULLPATH)]; prereqs = [$^]"
+	target/$(FULLPATH)/debian/usr/bin/stepmania
 	cd target/$(FULLPATH) && fakeroot dpkg-deb --build debian
 	mv target/$(FULLPATH)/debian.deb target/stepmania-$(STEPMANIA_VERSION)-$(shell arch).deb
 	lintian target/stepmania-$(STEPMANIA_VERSION)-$(shell arch).deb
 
 # stepmania symlink on the PATH
-target/$(FULLPATH)/debian/usr/local/bin/stepmania:
+target/$(FULLPATH)/debian/usr/bin/stepmania:
+	mkdir -p $(@D)
 	ln -s /opt/$(SMPATH)/stepmania $@
 
 # debian control file gets envvars substituted FRESH EVERY TIME
 .PHONY: target/$(FULLPATH)/debian/DEBIAN/*
 target/$(FULLPATH)/debian/DEBIAN/*:
-	echo "sm version: $(STEPMANIA_VERSION) / hash: $(STEPMANIA_HASH) / date: $(STEPMANIA_DATE)"
 	cat $(FULLPATH)/debian/DEBIAN/$(@F) | envsubst > $@
 
 # changelog gets a copy compressed
@@ -58,14 +57,14 @@ target/$(FULLPATH)/debian/usr/share/doc/stepmania/changelog.Debian.gz: $(FULLPAT
 	cat $(<) | envsubst > $(basename $@)
 	gzip --no-name -9 $(basename $@)
 
-# binaries in need of stripping
+# stepmania needs stripping
+.PHONY: target/$(FULLPATH)/debian/opt/$(SMPATH)/stepmania
 target/$(FULLPATH)/debian/opt/$(SMPATH)/stepmania:
-	echo "Stripping [$@]"
 	strip --strip-unneeded $@
 
 # GtkModule needs stripping and non-execute
+.PHONY: target/$(FULLPATH)/debian/opt/$(SMPATH)/GtkModule.so
 target/$(FULLPATH)/debian/opt/$(SMPATH)/GtkModule.so:
-	echo "Stripping [$@]"
 	strip --strip-unneeded $@
 	chmod a-x $@
 

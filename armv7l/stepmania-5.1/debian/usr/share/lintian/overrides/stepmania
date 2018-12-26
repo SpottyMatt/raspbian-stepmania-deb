@@ -25,3 +25,8 @@ stepmania binary: multiline-field depends
 # I don't know why deb doesn't know about the arm architecture.
 stepmania binary: unknown-architecture armv7l
 
+# This installs a 
+
+stepmania binary: dir-in-usr-local usr/local/bin/
+stepmania binary: file-in-usr-local usr/local/bin/stepmania
+

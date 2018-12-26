@@ -1,6 +1,6 @@
 Package: stepmania
 Version: $STEPMANIA_VERSION
-Section: contrib
+Section: contrib/games
 Priority: optional
 Architecture: armv7l
 Depends: ffmpeg (>= 7:3.2.10-1~deb9u1+rpt2), 
