@@ -34,35 +34,39 @@ endif
 
 stepmania-%: \
 	target/$(FULLPATH)/debian/DEBIAN/control \
-	target/$(FULLPATH)/usr/share/doc/stepmania/changelog.Debian.gz \
+	target/$(FULLPATH)/debian/usr/share/doc/stepmania/changelog.Debian.gz \
 	target/$(FULLPATH)/debian/opt/$(SMPATH)/GtkModule.so \
-	target/$(FULLPATH)/debian/opt/$(SMPATH)/stepmania
+	target/$(FULLPATH)/debian/opt/$(SMPATH)/stepmania \
+	target/$(FULLPATH)/debian/usr/local/bin/stepmania
 	echo "BUILDING detected target [$@]; fullpath = [$(FULLPATH)]; prereqs = [$^]"
 	cd target/$(FULLPATH) && fakeroot dpkg-deb --build debian
 	mv target/$(FULLPATH)/debian.deb target/stepmania-$(STEPMANIA_VERSION)-$(shell arch).deb
 	lintian target/stepmania-$(STEPMANIA_VERSION)-$(shell arch).deb
 
-# debian control files gets envvars substituted
+# stepmania symlink on the PATH
+target/$(FULLPATH)/debian/usr/local/bin/stepmania:
+	ln -s /opt/$(SMPATH)/stepmania $@
+
+# debian control file gets envvars substituted FRESH EVERY TIME
 .PHONY: target/$(FULLPATH)/debian/DEBIAN/*
 target/$(FULLPATH)/debian/DEBIAN/*:
 	echo "sm version: $(STEPMANIA_VERSION) / hash: $(STEPMANIA_HASH) / date: $(STEPMANIA_DATE)"
 	cat $(FULLPATH)/debian/DEBIAN/$(@F) | envsubst > $@
 
 # changelog gets a copy compressed
-target/$(FULLPATH)/usr/share/doc/stepmania/changelog.Debian.gz:
-	gzip --keep --no-name --to-stdout -9 $(FULLPATH)/debian/changelog > $@
+target/$(FULLPATH)/debian/usr/share/doc/stepmania/changelog.Debian.gz: $(FULLPATH)/debian/usr/share/doc/stepmania/changelog.Debian
+	cat $(<) | envsubst > $(basename $@)
+	gzip --no-name -9 $(basename $@)
 
 # binaries in need of stripping
-.PHONY: target/$(FULLPATH)/debian/opt/$(SMPATH)/stepmania
 target/$(FULLPATH)/debian/opt/$(SMPATH)/stepmania:
 	echo "Stripping [$@]"
-	strip --strip-unneeded -o $@ /usr/local/$(SMPATH)/$(@F)
+	strip --strip-unneeded $@
 
 # GtkModule needs stripping and non-execute
-.PHONY: target/$(FULLPATH)/debian/opt/$(SMPATH)/GtkModule.so
 target/$(FULLPATH)/debian/opt/$(SMPATH)/GtkModule.so:
 	echo "Stripping [$@]"
-	strip --strip-unneeded -o $@ /usr/local/$(SMPATH)/$(@F)
+	strip --strip-unneeded $@
 	chmod a-x $@
 
 # clone the stepmania repository so we can get commit information
