@@ -1,10 +1,9 @@
-'SUBDIRS := $(shell arch)/*
+SUBDIRS := $(shell arch)/*
 PAREN := \)
 .EXPORT_ALL_VARIABLES:
 
 all: $(SUBDIRS)
 $(SUBDIRS): target/stepmania
-	echo "BUILDING srcdir [$@]"
 	rm -rf target/$@
 	mkdir -p target/$@
 	rsync --update --recursive $@/* target/$@
