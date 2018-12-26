@@ -8,8 +8,8 @@ $(SUBDIRS): target/stepmania
 	rm -rf target/$@
 	mkdir -p target/$@
 	rsync --update --recursive $@/* target/$@
-	mkdir -p target/$@/debian/opt/$(@F)
-	rsync --update --recursive /usr/local/$(@F)/* target/$@/debian/opt/$(@F)/.
+	mkdir -p target/$@/debian/usr/games/$(@F)
+	rsync --update --recursive /usr/local/$(@F)/* target/$@/debian/usr/games/$(@F)/.
 	$(MAKE) $(@F) FULLPATH=$@ SMPATH=$(@F)
 .PHONY: all $(SUBDIRS)
 
@@ -35,8 +35,8 @@ endif
 stepmania-%: \
 	target/$(FULLPATH)/debian/DEBIAN/control \
 	target/$(FULLPATH)/debian/usr/share/doc/stepmania/changelog.Debian.gz \
-	target/$(FULLPATH)/debian/opt/$(SMPATH)/GtkModule.so \
-	target/$(FULLPATH)/debian/opt/$(SMPATH)/stepmania \
+	target/$(FULLPATH)/debian/usr/games/$(SMPATH)/GtkModule.so \
+	target/$(FULLPATH)/debian/usr/games/$(SMPATH)/stepmania \
 	target/$(FULLPATH)/debian/usr/bin/stepmania
 	cd target/$(FULLPATH) && fakeroot dpkg-deb --build debian
 	mv target/$(FULLPATH)/debian.deb target/stepmania-$(STEPMANIA_VERSION)-$(shell arch).deb
@@ -45,7 +45,7 @@ stepmania-%: \
 # stepmania symlink on the PATH
 target/$(FULLPATH)/debian/usr/bin/stepmania:
 	mkdir -p $(@D)
-	ln -s /opt/$(SMPATH)/stepmania $@
+	ln -s /usr/games/$(SMPATH)/stepmania $@
 
 # debian control file gets envvars substituted FRESH EVERY TIME
 .PHONY: target/$(FULLPATH)/debian/DEBIAN/*
@@ -58,13 +58,13 @@ target/$(FULLPATH)/debian/usr/share/doc/stepmania/changelog.Debian.gz: $(FULLPAT
 	gzip --no-name -9 $(basename $@)
 
 # stepmania needs stripping
-.PHONY: target/$(FULLPATH)/debian/opt/$(SMPATH)/stepmania
-target/$(FULLPATH)/debian/opt/$(SMPATH)/stepmania:
+.PHONY: target/$(FULLPATH)/debian/usr/games/$(SMPATH)/stepmania
+target/$(FULLPATH)/debian/usr/games/$(SMPATH)/stepmania:
 	strip --strip-unneeded $@
 
 # GtkModule needs stripping and non-execute
-.PHONY: target/$(FULLPATH)/debian/opt/$(SMPATH)/GtkModule.so
-target/$(FULLPATH)/debian/opt/$(SMPATH)/GtkModule.so:
+.PHONY: target/$(FULLPATH)/debian/usr/games/$(SMPATH)/GtkModule.so
+target/$(FULLPATH)/debian/usr/games/$(SMPATH)/GtkModule.so:
 	strip --strip-unneeded $@
 	chmod a-x $@
 
