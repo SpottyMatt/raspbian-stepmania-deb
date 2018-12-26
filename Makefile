@@ -1,4 +1,4 @@
-SUBDIRS := $(shell arch)/*
+SUBDIRS := $(shell dpkg --print-architecture)/*
 PAREN := \)
 .EXPORT_ALL_VARIABLES:
 
