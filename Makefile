@@ -16,7 +16,7 @@ $(SUBDIRS): target/stepmania
 ifdef SMPATH
 STEPMANIA_VERSION_NUM:=$(shell /usr/local/$(SMPATH)/stepmania --version 2>/dev/null | head -n 1 | awk  '{gsub("StepMania","", $$1); print $$1}')
 STEPMANIA_HASH:=$(shell /usr/local/$(SMPATH)/stepmania --version 2>/dev/null | head -n 2 | tail -n 1 | awk '{gsub("$(PAREN)","",$$NF); print $$NF}')
-STEPMANIA_DATE:=$(shell cd target/stepmania && git show -s --format=%cd --date=short $(STEPMANIA_HASH))
+STEPMANIA_DATE:=$(shell cd target/stepmania && git show -s --format=%cd --date=short $(STEPMANIA_HASH) | tr -d '-')
 STEPMANIA_DEPS:=$(shell ./find-bin-dep-pkg.py --display debian-control /usr/local/$(SMPATH)/stepmania)
 
 PACKAGER_NAME:=$(shell id -nu)
