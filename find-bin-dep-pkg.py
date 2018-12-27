@@ -7,7 +7,7 @@ import subprocess
 def parse_csv_dict(_csv_dict):
 	return {pair[0] : pair[1] for pair in [joined_pair.split("=") for joined_pair in _csv_dict.split(",") ]}
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description="Locate the debian packages & versions that provide the shared libraries required by one or more binaries. Assumes that this is a debian system & the binaries all correctly run on this system." )
 
 parser.add_argument("--hints", help="csv of so=pkg hints, csv", type=parse_csv_dict)
 parser.add_argument("--display", help="libraries, packages, package-versions, or deb-control", default="package-versions", type=str)
