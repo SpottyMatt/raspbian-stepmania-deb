@@ -34,4 +34,8 @@ will be determined automatically by looking at the `stepmania` binary that you c
 If you want to package and distribute a different version, just compile a different version first!
 
 By default, all binary packages will be labelled with a `YYYY-MM-DD` datestamp, e.g.
-If you are packaging a "real release" of StepMania, run `make RELEASE=true` to generate the packge with just a version number
+If you are packaging a "real release" of StepMania,
+run `make RELEASE=true` to generate the packge with just a version number, e.g.
+
+	stepmania-5.1.0-b2-armhf
+
