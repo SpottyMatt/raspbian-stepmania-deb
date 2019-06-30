@@ -8,6 +8,6 @@ Maintainer: Matthias Rozensztok <SpottyMatt@gmail.com>
 Description: Advanced cross-platform rhythm game for home and arcade use.
  This package was specifically built for the Raspberry Pi platform.
  For more information about the process used to create this package,
- visit https://github.com/SpottyMatt/stepmania-raspi-deb
+ visit https://github.com/SpottyMatt/raspbian-stepmania-deb
 Homepage: https://github.com/stepmania/stepmania
 

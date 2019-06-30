@@ -3,12 +3,26 @@ StepMania Binaries for Raspberry Pi
 
 ![Packaging StepMania on Raspberry Pi](stepmania-deb.png)
 
+These scripts can build `.deb` binary packages to install StepMania on a Raspberry Pi.
+This repository's [releases](https://github.com/SpottyMatt/raspbian-stepmania-deb/releases/)
+hosts some pre-built StepMania binaries.
+
+There is a lot more required to make StepMania actually _playable_ on a Raspberry Pi.
+If all you want to do is play StepMania, check out
+[`raspbian-3b-stepmania-arcade`](https://github.com/SpottyMatt/raspbian-3b-stepmania-arcade) instead.
+
 Downloads
 ==============================
 
 Head over to the [releases](https://github.com/SpottyMatt/stepmania-raspi-deb/releases).
 
-**Note:** These will run, but there's a lot more you can do to make StepMania actually playable. Perhaps [`SpottyMatt/raspbian-3b-stepmania-arcade`](https://github.com/SpottyMatt/raspbian-3b-stepmania-arcade) could help with that.
+Installation Instructions
+-------------------------
+
+1. Download the correct `.deb` package for your Raspbian distribution
+	* You run `cat /etc/os-release` and look for the `VERSION_CODENAME` to check
+2. Run `sudo apt-get install -f stepmania-...deb` to install
+3. Done!
 
 Building Binaries
 ==============================

@@ -9,8 +9,8 @@ $(SUBDIRS): target/stepmania lintian
 	rm -rf target/$@
 	mkdir -p target/$@
 	rsync --update --recursive $@/* target/$@
-	mkdir -p target/$@/debian/usr/games/$(@F)
-	rsync --update --recursive /usr/local/$(@F)/* target/$@/debian/usr/games/$(@F)/.
+	mkdir -p target/$@/usr/games/$(@F)
+	rsync --update --recursive /usr/local/$(@F)/* target/$@/usr/games/$(@F)/.
 	$(MAKE) $(@F) FULLPATH=$@ SMPATH=$(@F)
 .PHONY: all $(SUBDIRS)
 
@@ -35,38 +35,39 @@ endif
 endif
 
 stepmania-%: \
-	target/$(FULLPATH)/debian/DEBIAN/control \
-	target/$(FULLPATH)/debian/usr/share/doc/stepmania/changelog.Debian.gz \
-	target/$(FULLPATH)/debian/usr/games/$(SMPATH)/GtkModule.so \
-	target/$(FULLPATH)/debian/usr/games/$(SMPATH)/stepmania \
-	target/$(FULLPATH)/debian/usr/bin/stepmania
+	target/$(FULLPATH)/DEBIAN/control \
+	target/$(FULLPATH)/usr/share/doc/stepmania/changelog.Debian.gz \
+	target/$(FULLPATH)/usr/games/$(SMPATH)/GtkModule.so \
+	target/$(FULLPATH)/usr/games/$(SMPATH)/stepmania \
+	target/$(FULLPATH)/usr/share/man/man6/stepmania.6 \
+	target/$(FULLPATH)/usr/bin/stepmania
 	cd target/$(FULLPATH) && fakeroot dpkg-deb --build debian
 	mv target/$(FULLPATH)/debian.deb target/stepmania-$(STEPMANIA_VERSION)-$(ARCH)-$(DISTRO).deb
 	lintian target/stepmania-$(STEPMANIA_VERSION)-$(ARCH)-$(DISTRO).deb
 
 # stepmania symlink on the PATH
-target/$(FULLPATH)/debian/usr/bin/stepmania:
+target/$(FULLPATH)/usr/bin/stepmania:
 	mkdir -p $(@D)
 	ln -s ../games/$(SMPATH)/stepmania $@
 
-# debian control file gets envvars substituted FRESH EVERY TIME
-.PHONY: target/$(FULLPATH)/debian/DEBIAN/*
-target/$(FULLPATH)/debian/DEBIAN/*:
-	cat $(FULLPATH)/debian/DEBIAN/$(@F) | envsubst > $@
+# debian control files get envvars substituted FRESH EVERY TIME
+.PHONY: target/$(FULLPATH)/DEBIAN/*
+target/$(FULLPATH)/DEBIAN/*:
+	cat $(FULLPATH)/DEBIAN/$(@F) | envsubst > $@
 
-# changelog gets a copy compressed
-target/$(FULLPATH)/debian/usr/share/doc/stepmania/changelog.Debian.gz: $(FULLPATH)/debian/usr/share/doc/stepmania/changelog.Debian
+# changelog must be compressed
+target/$(FULLPATH)/usr/share/doc/stepmania/changelog.Debian.gz: $(FULLPATH)/usr/share/doc/stepmania/changelog.Debian
 	cat $(<) | envsubst > $(basename $@)
 	gzip --no-name -9 $(basename $@)
 
 # stepmania needs stripping
-.PHONY: target/$(FULLPATH)/debian/usr/games/$(SMPATH)/stepmania
-target/$(FULLPATH)/debian/usr/games/$(SMPATH)/stepmania:
+.PHONY: target/$(FULLPATH)/usr/games/$(SMPATH)/stepmania
+target/$(FULLPATH)/usr/games/$(SMPATH)/stepmania:
 	strip --strip-unneeded $@
 
 # GtkModule needs stripping and non-execute
-.PHONY: target/$(FULLPATH)/debian/usr/games/$(SMPATH)/GtkModule.so
-target/$(FULLPATH)/debian/usr/games/$(SMPATH)/GtkModule.so:
+.PHONY: target/$(FULLPATH)/usr/games/$(SMPATH)/GtkModule.so
+target/$(FULLPATH)/usr/games/$(SMPATH)/GtkModule.so:
 	strip --strip-unneeded $@
 	chmod a-x $@
 
