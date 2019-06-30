@@ -11,7 +11,11 @@ There is a lot more required to make StepMania actually _playable_ on a Raspberr
 If all you want to do is play StepMania, check out
 [`raspbian-3b-stepmania-arcade`](https://github.com/SpottyMatt/raspbian-3b-stepmania-arcade) instead.
 
-Downloads
+1. [Download Binaries](#download-binaries)
+	1. [Installation Instructions](#installation-instructions)
+2. [Building Binaries](#building-binaries)
+
+Download Binaries
 ==============================
 
 Head over to the [releases](https://github.com/SpottyMatt/stepmania-raspi-deb/releases).
