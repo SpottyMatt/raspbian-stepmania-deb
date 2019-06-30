@@ -1,15 +1,16 @@
+DISTRO := $(shell dpkg --status tzdata|grep Provides|cut -f2 -d'-')
 ARCH := $(shell dpkg --print-architecture)
 SUBDIRS := $(ARCH)/*
 PAREN := \)
 .EXPORT_ALL_VARIABLES:
 
 all: $(SUBDIRS)
-$(SUBDIRS): target/stepmania
+$(SUBDIRS): target/stepmania packages
 	rm -rf target/$@
 	mkdir -p target/$@
 	rsync --update --recursive $@/* target/$@
-	mkdir -p target/$@/debian/usr/games/$(@F)
-	rsync --update --recursive /usr/local/$(@F)/* target/$@/debian/usr/games/$(@F)/.
+	mkdir -p target/$@/usr/games/$(@F)
+	rsync --update --recursive /usr/local/$(@F)/* target/$@/usr/games/$(@F)/.
 	$(MAKE) $(@F) FULLPATH=$@ SMPATH=$(@F)
 .PHONY: all $(SUBDIRS)
 
@@ -34,38 +35,43 @@ endif
 endif
 
 stepmania-%: \
-	target/$(FULLPATH)/debian/DEBIAN/control \
-	target/$(FULLPATH)/debian/usr/share/doc/stepmania/changelog.Debian.gz \
-	target/$(FULLPATH)/debian/usr/games/$(SMPATH)/GtkModule.so \
-	target/$(FULLPATH)/debian/usr/games/$(SMPATH)/stepmania \
-	target/$(FULLPATH)/debian/usr/bin/stepmania
-	cd target/$(FULLPATH) && fakeroot dpkg-deb --build debian
-	mv target/$(FULLPATH)/debian.deb target/stepmania-$(STEPMANIA_VERSION)-$(ARCH).deb
-	lintian target/stepmania-$(STEPMANIA_VERSION)-$(ARCH).deb
+	target/$(FULLPATH)/DEBIAN/control \
+	target/$(FULLPATH)/usr/share/doc/stepmania/changelog.Debian.gz \
+	target/$(FULLPATH)/usr/games/$(SMPATH)/GtkModule.so \
+	target/$(FULLPATH)/usr/games/$(SMPATH)/stepmania \
+	target/$(FULLPATH)/usr/share/man/man6/stepmania.6.gz \
+	target/$(FULLPATH)/usr/bin/stepmania
+	cd target && fakeroot dpkg-deb --build $(FULLPATH)
+	mv target/$(FULLPATH).deb target/stepmania-$(STEPMANIA_VERSION)-$(ARCH)-$(DISTRO).deb
+	lintian target/stepmania-$(STEPMANIA_VERSION)-$(ARCH)-$(DISTRO).deb
 
 # stepmania symlink on the PATH
-target/$(FULLPATH)/debian/usr/bin/stepmania:
+target/$(FULLPATH)/usr/bin/stepmania:
 	mkdir -p $(@D)
 	ln -s ../games/$(SMPATH)/stepmania $@
 
-# debian control file gets envvars substituted FRESH EVERY TIME
-.PHONY: target/$(FULLPATH)/debian/DEBIAN/*
-target/$(FULLPATH)/debian/DEBIAN/*:
-	cat $(FULLPATH)/debian/DEBIAN/$(@F) | envsubst > $@
+# debian control files get envvars substituted FRESH EVERY TIME
+.PHONY: target/$(FULLPATH)/DEBIAN/*
+target/$(FULLPATH)/DEBIAN/*:
+	cat $(FULLPATH)/DEBIAN/$(@F) | envsubst > $@
 
-# changelog gets a copy compressed
-target/$(FULLPATH)/debian/usr/share/doc/stepmania/changelog.Debian.gz: $(FULLPATH)/debian/usr/share/doc/stepmania/changelog.Debian
+# changelog must be substituted and compressed
+target/$(FULLPATH)/usr/share/doc/stepmania/changelog.Debian.gz: $(FULLPATH)/usr/share/doc/stepmania/changelog.Debian
 	cat $(<) | envsubst > $(basename $@)
 	gzip --no-name -9 $(basename $@)
 
+# manpages must be compressed
+target/$(FULLPATH)/usr/share/man/man6/stepmania.6.gz: $(FULLPATH)/usr/share/man/man6/stepmania.6
+	gzip --no-name -9 $(basename $@)
+
 # stepmania needs stripping
-.PHONY: target/$(FULLPATH)/debian/usr/games/$(SMPATH)/stepmania
-target/$(FULLPATH)/debian/usr/games/$(SMPATH)/stepmania:
+.PHONY: target/$(FULLPATH)/usr/games/$(SMPATH)/stepmania
+target/$(FULLPATH)/usr/games/$(SMPATH)/stepmania:
 	strip --strip-unneeded $@
 
 # GtkModule needs stripping and non-execute
-.PHONY: target/$(FULLPATH)/debian/usr/games/$(SMPATH)/GtkModule.so
-target/$(FULLPATH)/debian/usr/games/$(SMPATH)/GtkModule.so:
+.PHONY: target/$(FULLPATH)/usr/games/$(SMPATH)/GtkModule.so
+target/$(FULLPATH)/usr/games/$(SMPATH)/GtkModule.so:
 	strip --strip-unneeded $@
 	chmod a-x $@
 
@@ -73,5 +79,13 @@ target/$(FULLPATH)/debian/usr/games/$(SMPATH)/GtkModule.so:
 target/stepmania:
 	git clone https://github.com/stepmania/stepmania.git target/stepmania
 
+# Install deb package linter
+.PHONY: packages
+packages:
+	sudo apt-get install -y \
+		binutils \
+		lintian
+
+.PHONY: clean
 clean:
 	rm -rf target
