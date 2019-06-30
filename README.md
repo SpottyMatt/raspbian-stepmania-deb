@@ -24,11 +24,11 @@ Usage
 
 Packages will be named following the pattern
 
-	stepmania-VERSION-DATE-ARCHITECTURE.deb
+	stepmania-VERSION-DATE-ARCHITECTURE-DISTRO.deb
 
 For example, if you built StepMania 5.0.1 beta2, as it stood on July 23, 2018, and packaged it with this tool you would get
 
-	stepmania-5.1.0-b2-2018-07-23-armhf.deb
+	stepmania-5.1.0-b2-2018-07-23-armhf-stretch.deb
 
 The version number, source control revision, and revision date used in the binary package
 will be determined automatically by looking at the `stepmania` binary that you compiled.
@@ -39,5 +39,5 @@ By default, all binary packages will be labelled with a `YYYY-MM-DD` datestamp, 
 If you are packaging a "real release" of StepMania,
 run `make RELEASE=true` to generate the packge with just a version number, e.g.
 
-	stepmania-5.1.0-b2-armhf
+	stepmania-5.1.0-b2-armhf-stretch
 
