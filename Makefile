@@ -5,7 +5,7 @@ PAREN := \)
 .EXPORT_ALL_VARIABLES:
 
 all: $(SUBDIRS)
-$(SUBDIRS): target/stepmania lintian
+$(SUBDIRS): target/stepmania packages
 	rm -rf target/$@
 	mkdir -p target/$@
 	rsync --update --recursive $@/* target/$@
@@ -80,9 +80,11 @@ target/stepmania:
 	git clone https://github.com/stepmania/stepmania.git target/stepmania
 
 # Install deb package linter
-.PHONY: lintian
-lintian:
-	sudo apt-get install -y lintian
+.PHONY: packages
+packages:
+	sudo apt-get install -y \
+		binutils \
+		lintian
 
 .PHONY: clean
 clean:
