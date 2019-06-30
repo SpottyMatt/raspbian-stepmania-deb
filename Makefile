@@ -39,7 +39,7 @@ stepmania-%: \
 	target/$(FULLPATH)/usr/share/doc/stepmania/changelog.Debian.gz \
 	target/$(FULLPATH)/usr/games/$(SMPATH)/GtkModule.so \
 	target/$(FULLPATH)/usr/games/$(SMPATH)/stepmania \
-	target/$(FULLPATH)/usr/share/man/man6/stepmania.6 \
+	target/$(FULLPATH)/usr/share/man/man6/stepmania.6.gz \
 	target/$(FULLPATH)/usr/bin/stepmania
 	cd target && fakeroot dpkg-deb --build $(FULLPATH)
 	mv target/$(FULLPATH).deb target/stepmania-$(STEPMANIA_VERSION)-$(ARCH)-$(DISTRO).deb
@@ -55,9 +55,13 @@ target/$(FULLPATH)/usr/bin/stepmania:
 target/$(FULLPATH)/DEBIAN/*:
 	cat $(FULLPATH)/DEBIAN/$(@F) | envsubst > $@
 
-# changelog must be compressed
+# changelog must be substituted and compressed
 target/$(FULLPATH)/usr/share/doc/stepmania/changelog.Debian.gz: $(FULLPATH)/usr/share/doc/stepmania/changelog.Debian
 	cat $(<) | envsubst > $(basename $@)
+	gzip --no-name -9 $(basename $@)
+
+# manpages must be compressed
+target/$(FULLPATH)/usr/share/man/man6/stepmania.6.gz: $(FULLPATH)/usr/share/man/man6/stepmania.6
 	gzip --no-name -9 $(basename $@)
 
 # stepmania needs stripping
