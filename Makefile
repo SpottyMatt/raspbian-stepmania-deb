@@ -41,8 +41,8 @@ stepmania-%: \
 	target/$(FULLPATH)/usr/games/$(SMPATH)/stepmania \
 	target/$(FULLPATH)/usr/share/man/man6/stepmania.6 \
 	target/$(FULLPATH)/usr/bin/stepmania
-	cd target/$(FULLPATH) && fakeroot dpkg-deb --build debian
-	mv target/$(FULLPATH)/debian.deb target/stepmania-$(STEPMANIA_VERSION)-$(ARCH)-$(DISTRO).deb
+	cd target && fakeroot dpkg-deb --build $(FULLPATH)
+	mv target/$(FULLPATH).deb target/stepmania-$(STEPMANIA_VERSION)-$(ARCH)-$(DISTRO).deb
 	lintian target/stepmania-$(STEPMANIA_VERSION)-$(ARCH)-$(DISTRO).deb
 
 # stepmania symlink on the PATH
