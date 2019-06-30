@@ -11,7 +11,7 @@ Head over to the [releases](https://github.com/SpottyMatt/stepmania-raspi-deb/re
 Building Binaries
 ==============================
 
-This helps build `.deb` packages of StepMania binaries for distribution to Raspberry Pi systems.
+This tooling builds `.deb` packages of StepMania binaries for distribution to Raspberry Pi systems.
 It should be used on a Raspberry Pi system that has successfully compiled StepMania from source.
 
 Pre-Requisites
