@@ -1,3 +1,4 @@
+DISTRO := $(shell . /etc/os-release && echo $${VERSION_CODENAME})
 ARCH := $(shell dpkg --print-architecture)
 SUBDIRS := $(ARCH)/*
 PAREN := \)
@@ -40,8 +41,8 @@ stepmania-%: \
 	target/$(FULLPATH)/debian/usr/games/$(SMPATH)/stepmania \
 	target/$(FULLPATH)/debian/usr/bin/stepmania
 	cd target/$(FULLPATH) && fakeroot dpkg-deb --build debian
-	mv target/$(FULLPATH)/debian.deb target/stepmania-$(STEPMANIA_VERSION)-$(ARCH).deb
-	lintian target/stepmania-$(STEPMANIA_VERSION)-$(ARCH).deb
+	mv target/$(FULLPATH)/debian.deb target/stepmania-$(STEPMANIA_VERSION)-$(ARCH)-$(DISTRO).deb
+	lintian target/stepmania-$(STEPMANIA_VERSION)-$(ARCH)-$(DISTRO).deb
 
 # stepmania symlink on the PATH
 target/$(FULLPATH)/debian/usr/bin/stepmania:
@@ -73,5 +74,6 @@ target/$(FULLPATH)/debian/usr/games/$(SMPATH)/GtkModule.so:
 target/stepmania:
 	git clone https://github.com/stepmania/stepmania.git target/stepmania
 
+.PHONY: clean
 clean:
 	rm -rf target
