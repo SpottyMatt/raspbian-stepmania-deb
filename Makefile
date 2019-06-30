@@ -5,7 +5,7 @@ PAREN := \)
 .EXPORT_ALL_VARIABLES:
 
 all: $(SUBDIRS)
-$(SUBDIRS): target/stepmania
+$(SUBDIRS): target/stepmania lintian
 	rm -rf target/$@
 	mkdir -p target/$@
 	rsync --update --recursive $@/* target/$@
@@ -73,6 +73,11 @@ target/$(FULLPATH)/debian/usr/games/$(SMPATH)/GtkModule.so:
 # clone the stepmania repository so we can get commit information
 target/stepmania:
 	git clone https://github.com/stepmania/stepmania.git target/stepmania
+
+# Install deb package linter
+.PHONY: lintian
+lintian:
+	sudo apt-get install -y lintian
 
 .PHONY: clean
 clean:
