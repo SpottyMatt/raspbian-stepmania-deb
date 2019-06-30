@@ -1,5 +1,7 @@
-RaspberryPi StepMania Binary Package Generator
-=====
+Raspberry Pi StepMania Binary Package Generator
+==============================
+
+![Packaging StepMania on Raspberry Pi](stepmania-deb.png)
 
 This helps build `.deb` packages of StepMania binaries for distribution to Raspberry Pi systems.
 It should be used on a Raspberry Pi system that has successfully compiled StepMania from source.
