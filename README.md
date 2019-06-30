@@ -37,7 +37,7 @@ It should be used on a Raspberry Pi system that has successfully compiled StepMa
 Pre-Requisites
 -------------------------
 
-1. Your Raspberry Pi system has successfully compiled StepMania from source (perhaps [this repository](https://github.com/SpottyMatt/raspbian-stepmania-build) could help with that).
+1. Your Raspberry Pi system has successfully [compiled StepMania from source](https://github.com/SpottyMatt/raspbian-stepmania-build).
 2. Your Raspberry Pi system uses `dpkg` to manage packages.
 3. You are able to clone from GitHub.com
 
