@@ -1,4 +1,4 @@
-DISTRO := $(shell . /etc/os-release && echo $${VERSION_CODENAME})
+DISTRO := $(shell dpkg --status tzdata|grep Provides|cut -f2 -d'-')
 ARCH := $(shell dpkg --print-architecture)
 SUBDIRS := $(ARCH)/*
 PAREN := \)
