@@ -8,7 +8,7 @@ Downloads
 
 Head over to the [releases](https://github.com/SpottyMatt/stepmania-raspi-deb/releases).
 
-**Note:** These will run, but there's a lot more you can do to make StepMania actually playable. Perhaps [`SpottyMatt/raspbian-3b-stepmania-arcade](https://github.com/SpottyMatt/raspbian-3b-stepmania-arcade) could help with that.
+**Note:** These will run, but there's a lot more you can do to make StepMania actually playable. Perhaps [`SpottyMatt/raspbian-3b-stepmania-arcade`](https://github.com/SpottyMatt/raspbian-3b-stepmania-arcade) could help with that.
 
 Building Binaries
 ==============================
