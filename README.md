@@ -1,4 +1,4 @@
-Raspberry Pi StepMania Binary Package Generator
+StepMania Binaries for Raspberry Pi
 ==============================
 
 ![Packaging StepMania on Raspberry Pi](stepmania-deb.png)
