@@ -3,18 +3,26 @@ StepMania Binaries for Raspberry Pi
 
 ![Packaging StepMania on Raspberry Pi](stepmania-deb.png)
 
+Downloads
+==============================
+
+Head over to the [releases](https://github.com/SpottyMatt/stepmania-raspi-deb/releases).
+
+Building Binaries
+==============================
+
 This helps build `.deb` packages of StepMania binaries for distribution to Raspberry Pi systems.
 It should be used on a Raspberry Pi system that has successfully compiled StepMania from source.
 
 Pre-Requisites
------
+-------------------------
 
 1. Your Raspberry Pi system has successfully compiled StepMania from source (perhaps [this repository](https://github.com/SpottyMatt/raspbian-stepmania-build) could help with that).
 2. Your Raspberry Pi system uses `dpkg` to manage packages.
 3. You are able to clone from GitHub.com
 
 Usage
------
+-------------------------
 
 1. Ensure that `/usr/local` contains one or more `stepmania-X.X` directories from successful compilation of StepMania
 2. Run `make`
