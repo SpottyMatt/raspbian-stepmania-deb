@@ -56,7 +56,7 @@ Packages will be named following the pattern
 
 For example, if you built StepMania 5.0.1 beta2, as it stood on July 23, 2018, and packaged it with this tool you would get
 
-	stepmania-5.1.0-b2-2018-07-23-armhf-stretch.deb
+	stepmania-5.1.0-b2-20180723-armhf-stretch.deb
 
 The version number, source control revision, and revision date used in the binary package
 will be determined automatically by looking at the `stepmania` binary that you compiled.
