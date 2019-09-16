@@ -28,6 +28,13 @@ class RPIModel:
 		return self.model_name + ":" + self.model_rev + ":" + self.release_date + ":" + self.cpu_rev + ":" + self.cpu_target + ":" + self.fpu_target
 
 rpi_models = [
+	RPIModel( "3B", "a02082", "1.0", "20161", "cortex-a53", "neon-fp-armv8" ),
+	RPIModel( "3B", "a22082", "1.1", "20161", "cortex-a53", "neon-fp-armv8" ),
+	RPIModel( "3B", "a32082", "1.2", "20164", "cortex-a53", "neon-fp-armv8" ),
+	RPIModel( "3B+", "a020d3", "1.3", "20181", "cortex-a53", "neon-fp-armv8" ),
+	RPIModel( "4B", "a03111", "1.1", "20192", "cortex-a72", "neon-fp-armv8" ),
+	RPIModel( "4B", "b03111", "1.1", "20192", "cortex-a72", "neon-fp-armv8" ),
+	RPIModel( "4B", "c03111", "1.1", "20192", "cortex-a72", "neon-fp-armv8" )
 ]
 
 cpuinfo = subprocess.Popen(["cat", "/proc/cpuinfo"], stdout=subprocess.PIPE)
