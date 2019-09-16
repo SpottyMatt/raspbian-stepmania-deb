@@ -1,5 +1,6 @@
 DISTRO := $(shell dpkg --status tzdata|grep Provides|cut -f2 -d'-')
 ARCH := $(shell dpkg --print-architecture)
+RPI_MODEL := $(shell ./rpi-hw-info.py | awk -F ':' '{print $$1}')
 SUBDIRS := $(ARCH)/*
 PAREN := \)
 .EXPORT_ALL_VARIABLES:
@@ -42,8 +43,8 @@ stepmania-%: \
 	target/$(FULLPATH)/usr/share/man/man6/stepmania.6.gz \
 	target/$(FULLPATH)/usr/bin/stepmania
 	cd target && fakeroot dpkg-deb --build $(FULLPATH)
-	mv target/$(FULLPATH).deb target/stepmania-$(STEPMANIA_VERSION)-$(ARCH)-$(DISTRO).deb
-	lintian target/stepmania-$(STEPMANIA_VERSION)-$(ARCH)-$(DISTRO).deb
+	mv target/$(FULLPATH).deb target/stepmania_$(STEPMANIA_VERSION)_$(RPI_MODEL)_$(DISTRO).deb
+	lintian target/stepmania_$(STEPMANIA_VERSION)_$(RPI_MODEL)_$(DISTRO).deb
 
 # stepmania symlink on the PATH
 target/$(FULLPATH)/usr/bin/stepmania:
