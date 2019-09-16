@@ -1,15 +1,20 @@
 DISTRO := $(shell dpkg --status tzdata|grep Provides|cut -f2 -d'-')
-RPI_MODEL := $(shell ./rpi-hw-info.py 2>/dev/null | awk -F ':' '{print $$1}')
-SUBDIRS := $(RPI_MODEL)/*
+ARCH := $(shell dpkg --print-architecture)
+RPI_MODEL := $(shell ./rpi-hw-info.py 2>/dev/null | awk -F ':' '{print $$1}' | tr '[:upper:]' '[:lower:]' )
+
+PACKAGE_NAME = stepmania-$(RPI_MODEL)
+
+SUBDIRS := $(ARCH)/*
+
 PAREN := \)
 
 .EXPORT_ALL_VARIABLES:
 
 all: $(SUBDIRS)
-$(SUBDIRS): target/stepmania packages validate
+$(SUBDIRS): target/stepmania packages
 	rm -rf target/$@
 	mkdir -p target/$@
-	rsync --update --recursive $@/* target/$@
+	rsync -v --update --recursive $@/* target/$@
 	mkdir -p target/$@/usr/games/$(@F)
 	rsync --update --recursive /usr/local/$(@F)/* target/$@/usr/games/$(@F)/.
 	$(MAKE) $(@F) FULLPATH=$@ SMPATH=$(@F)
@@ -37,14 +42,16 @@ endif
 
 stepmania-%: \
 	target/$(FULLPATH)/DEBIAN/control \
-	target/$(FULLPATH)/usr/share/doc/stepmania/changelog.Debian.gz \
+	target/$(FULLPATH)/usr/share/doc/$(PACKAGE_NAME)/changelog.Debian.gz \
+	target/$(FULLPATH)/usr/share/doc/$(PACKAGE_NAME)/copyright \
+	target/$(FULLPATH)/usr/share/lintian/overrides/$(PACKAGE_NAME) \
 	target/$(FULLPATH)/usr/games/$(SMPATH)/GtkModule.so \
 	target/$(FULLPATH)/usr/games/$(SMPATH)/stepmania \
 	target/$(FULLPATH)/usr/share/man/man6/stepmania.6.gz \
 	target/$(FULLPATH)/usr/bin/stepmania
 	cd target && fakeroot dpkg-deb --build $(FULLPATH)
-	mv target/$(FULLPATH).deb target/stepmania_$(STEPMANIA_VERSION)_$(RPI_MODEL)_$(DISTRO).deb
-	lintian target/stepmania_$(STEPMANIA_VERSION)_$(RPI_MODEL)_$(DISTRO).deb
+	mv target/$(FULLPATH).deb target/stepmania-$(RPI_MODEL)_$(STEPMANIA_VERSION)_$(DISTRO).deb
+	lintian target/stepmania-$(RPI_MODEL)_$(STEPMANIA_VERSION)_$(DISTRO).deb
 
 # stepmania symlink on the PATH
 target/$(FULLPATH)/usr/bin/stepmania:
@@ -56,10 +63,19 @@ target/$(FULLPATH)/usr/bin/stepmania:
 target/$(FULLPATH)/DEBIAN/*:
 	cat $(FULLPATH)/DEBIAN/$(@F) | envsubst > $@
 
+# lintian overrides file must be substituted and renamed
+target/$(FULLPATH)/usr/share/lintian/overrides/$(PACKAGE_NAME): $(FULLPATH)/usr/share/lintian/overrides/stepmania
+	cat $(<) | envsubst > $(basename $@)
+
 # changelog must be substituted and compressed
-target/$(FULLPATH)/usr/share/doc/stepmania/changelog.Debian.gz: $(FULLPATH)/usr/share/doc/stepmania/changelog.Debian
+target/$(FULLPATH)/usr/share/doc/$(PACKAGE_NAME)/changelog.Debian.gz: $(FULLPATH)/usr/share/doc/stepmania/changelog.Debian
+	mkdir -p $(shell dirname $@)
 	cat $(<) | envsubst > $(basename $@)
 	gzip --no-name -9 $(basename $@)
+
+# copyright gets renamed
+target/$(FULLPATH)/usr/share/doc/$(PACKAGE_NAME)/copyright: $(FULLPATH)/usr/share/doc/stepmania/copyright
+	cp $(<) $@
 
 # manpages must be compressed
 target/$(FULLPATH)/usr/share/man/man6/stepmania.6.gz: $(FULLPATH)/usr/share/man/man6/stepmania.6
