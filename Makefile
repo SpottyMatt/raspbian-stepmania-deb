@@ -1,7 +1,6 @@
 DISTRO := $(shell dpkg --status tzdata|grep Provides|cut -f2 -d'-')
-ARCH := $(shell dpkg --print-architecture)
 RPI_MODEL := $(shell ./rpi-hw-info.py | awk -F ':' '{print $$1}')
-SUBDIRS := $(ARCH)/*
+SUBDIRS := $(RPI_MODEL)/*
 PAREN := \)
 .EXPORT_ALL_VARIABLES:
 
