@@ -10,6 +10,20 @@ PAREN := \)
 
 .EXPORT_ALL_VARIABLES:
 
+ifeq ($(wildcard ./rpi-hw-info/rpi-hw-info.py),)
+all: submodules
+	$(MAKE) all
+
+submodules:
+	git submodule init rpi-hw-info
+	git submodule update rpi-hw-info
+	@ if ! [ -e ./rpi-hw-info/rpi-hw-info.py ]; then echo "Couldn't retrieve the RPi HW Info Detector's git submodule. Figure out why or run 'make RPI_MODEL=<your_model>'"; exit 1; fi
+
+%: submodules
+	$(MAKE) $@
+
+else
+
 all: $(SUBDIRS)
 $(SUBDIRS): target/stepmania packages
 	rm -rf target/$@
@@ -115,3 +129,5 @@ validate:
 .PHONY: clean
 clean:
 	rm -rf target
+
+endif
