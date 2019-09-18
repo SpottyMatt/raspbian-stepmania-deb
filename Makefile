@@ -2,6 +2,13 @@ DISTRO := $(shell dpkg --status tzdata|grep Provides|cut -f2 -d'-')
 ARCH := $(shell dpkg --print-architecture)
 RPI_MODEL := $(shell ./rpi-hw-info/rpi-hw-info.py 2>/dev/null | awk -F ':' '{print $$1}' | tr '[:upper:]' '[:lower:]' )
 
+ifeq ($(RPI_MODEL),3B+)
+# RPI 3B and 3B+ are the same hardware architecture and targets
+# So we don't need to generate separate packages for them.
+# Prefer the base model "3B" for labelling when we're on a 3B+
+RPI_MODEL=3B
+endif
+
 PACKAGE_NAME = stepmania-$(RPI_MODEL)
 
 SUBDIRS := $(ARCH)/*
