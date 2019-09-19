@@ -1,12 +1,12 @@
 DISTRO := $(shell dpkg --status tzdata|grep Provides|cut -f2 -d'-')
 ARCH := $(shell dpkg --print-architecture)
-RPI_MODEL := $(shell ./rpi-hw-info/rpi-hw-info.py 2>/dev/null | awk -F ':' '{print $$1}' | tr '[:upper:]' '[:lower:]' )
+RPI_MODEL = $(shell ./rpi-hw-info/rpi-hw-info.py 2>/dev/null | awk -F ':' '{print $$1}' | tr '[:upper:]' '[:lower:]' )
 
-ifeq ($(RPI_MODEL),3B+)
+ifeq ($(RPI_MODEL),3b+)
 # RPI 3B and 3B+ are the same hardware architecture and targets
 # So we don't need to generate separate packages for them.
 # Prefer the base model "3B" for labelling when we're on a 3B+
-RPI_MODEL=3B
+RPI_MODEL=3b
 endif
 
 PACKAGE_NAME = stepmania-$(RPI_MODEL)
@@ -32,7 +32,7 @@ submodules:
 else
 
 all: $(SUBDIRS)
-$(SUBDIRS): target/stepmania packages
+$(SUBDIRS): target/stepmania packages validate
 	rm -rf target/$@
 	mkdir -p target/$@
 	rsync -v --update --recursive $@/* target/$@
@@ -126,10 +126,9 @@ packages:
 
 .PHONY: validate
 validate:
-	echo "validate: $(RPI_MODEL)"
 	@if [ "x" = "x$(RPI_MODEL)" ]; then \
 		echo "ERROR: Unrecognized Raspberry Pi model. Run 'make RPI_MODEL=<model>' if you know which RPi you compiled for."; \
-		./rpi-hw-info.py; \
+		./rpi-hw-info/rpi-hw-info.py; \
 		exit 1; \
 	fi
 
