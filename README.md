@@ -25,8 +25,8 @@ Installation Instructions
 
 1. Download the correct `.deb` package for your Raspbian distribution
 	* You run `cat /etc/os-release` and look for the `VERSION_CODENAME` to check
-2. Run `sudo dpkg --install stepmania_....deb` to install
-3. Run `sudo apt-get install --fix-broken` (may not always be necessary)
+2. Run `sudo dpkg --install stepmania....deb` to install
+3. Run `sudo apt-get install --fix-broken` (may not always be necessary; do it anyway to be safe)
 3. Done!
 
 Building Binaries
@@ -46,6 +46,7 @@ Usage
 -------------------------
 
 1. Ensure that `/usr/local` contains one or more `stepmania-X.X` directories from successful compilation of StepMania
+	1. This path is not configurable; if you compiled StepMania somewhere else, copy it to `/usr/local`
 2. Run `make`
 3. One binary package will be generated in the `target` directory for each `/usr/local/stepmania-X.X` directory
 
@@ -53,19 +54,22 @@ Usage
 
 Packages will be named following the pattern
 
-	stepmania_VERSION_DATE_RPI-MODEL_DISTRO.deb
+	stepmania-RPI-MODEL_VERSION_DATE_DISTRO.deb
 
-For example, if you built StepMania 5.0.1 beta2, as it stood on July 23, 2018, and packaged it with this tool you would get
+For example, if you built StepMania 5.0.1 beta2, as it stood on July 23, 2018, and packaged it with this tool on a Raspberry Pi 4B, you would get
 
-	stepmania_5.1.0-b2_20180723_4B_stretch.deb
+	stepmania-4b_5.1.0-b2_20180723_stretch.deb
 
 The version number, source control revision, and revision date used in the binary package
 will be determined automatically by looking at the `stepmania` binary that you compiled.
 
+The Raspberry Pi model will be determined by the [SpottyMatt/rpi-hw-info](https://github.com/SpottyMatt/rpi-hw-info) repository.
+
 If you want to package and distribute a different version, just compile a different version first!
 
-By default, all binary packages will be labelled with a `YYYY-MM-DD` datestamp, e.g.
+By default, all binary packages will be labelled with a `YYYY-MM-DD` datestamp.
+
 If you are packaging a "real release" of StepMania,
 run `make RELEASE=true` to generate the packge with just a version number, e.g.
 
-	stepmania_5.1.0-b2_4B_stretch.deb
+	stepmania-4b_5.1.0-b2_stretch.deb
