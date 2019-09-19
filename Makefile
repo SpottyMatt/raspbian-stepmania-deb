@@ -1,14 +1,41 @@
 DISTRO := $(shell dpkg --status tzdata|grep Provides|cut -f2 -d'-')
 ARCH := $(shell dpkg --print-architecture)
+RPI_MODEL = $(shell ./rpi-hw-info/rpi-hw-info.py 2>/dev/null | awk -F ':' '{print $$1}' | tr '[:upper:]' '[:lower:]' )
+
+ifeq ($(RPI_MODEL),3b+)
+# RPI 3B and 3B+ are the same hardware architecture and targets
+# So we don't need to generate separate packages for them.
+# Prefer the base model "3B" for labelling when we're on a 3B+
+RPI_MODEL=3b
+endif
+
+PACKAGE_NAME = stepmania-$(RPI_MODEL)
+
 SUBDIRS := $(ARCH)/*
+
 PAREN := \)
+
 .EXPORT_ALL_VARIABLES:
 
+ifeq ($(wildcard ./rpi-hw-info/rpi-hw-info.py),)
+all: submodules
+	$(MAKE) all
+
+submodules:
+	git submodule init rpi-hw-info
+	git submodule update rpi-hw-info
+	@ if ! [ -e ./rpi-hw-info/rpi-hw-info.py ]; then echo "Couldn't retrieve the RPi HW Info Detector's git submodule. Figure out why or run 'make RPI_MODEL=<your_model>'"; exit 1; fi
+
+%: submodules
+	$(MAKE) $@
+
+else
+
 all: $(SUBDIRS)
-$(SUBDIRS): target/stepmania packages
+$(SUBDIRS): target/stepmania packages validate
 	rm -rf target/$@
 	mkdir -p target/$@
-	rsync --update --recursive $@/* target/$@
+	rsync -v --update --recursive $@/* target/$@
 	mkdir -p target/$@/usr/games/$(@F)
 	rsync --update --recursive /usr/local/$(@F)/* target/$@/usr/games/$(@F)/.
 	$(MAKE) $(@F) FULLPATH=$@ SMPATH=$(@F)
@@ -36,14 +63,16 @@ endif
 
 stepmania-%: \
 	target/$(FULLPATH)/DEBIAN/control \
-	target/$(FULLPATH)/usr/share/doc/stepmania/changelog.Debian.gz \
+	target/$(FULLPATH)/usr/share/doc/$(PACKAGE_NAME)/changelog.Debian.gz \
+	target/$(FULLPATH)/usr/share/doc/$(PACKAGE_NAME)/copyright \
+	target/$(FULLPATH)/usr/share/lintian/overrides/$(PACKAGE_NAME) \
 	target/$(FULLPATH)/usr/games/$(SMPATH)/GtkModule.so \
 	target/$(FULLPATH)/usr/games/$(SMPATH)/stepmania \
 	target/$(FULLPATH)/usr/share/man/man6/stepmania.6.gz \
 	target/$(FULLPATH)/usr/bin/stepmania
 	cd target && fakeroot dpkg-deb --build $(FULLPATH)
-	mv target/$(FULLPATH).deb target/stepmania-$(STEPMANIA_VERSION)-$(ARCH)-$(DISTRO).deb
-	lintian target/stepmania-$(STEPMANIA_VERSION)-$(ARCH)-$(DISTRO).deb
+	mv target/$(FULLPATH).deb target/stepmania-$(RPI_MODEL)_$(STEPMANIA_VERSION)_$(DISTRO).deb
+	lintian target/stepmania-$(RPI_MODEL)_$(STEPMANIA_VERSION)_$(DISTRO).deb
 
 # stepmania symlink on the PATH
 target/$(FULLPATH)/usr/bin/stepmania:
@@ -55,10 +84,19 @@ target/$(FULLPATH)/usr/bin/stepmania:
 target/$(FULLPATH)/DEBIAN/*:
 	cat $(FULLPATH)/DEBIAN/$(@F) | envsubst > $@
 
+# lintian overrides file must be substituted and renamed
+target/$(FULLPATH)/usr/share/lintian/overrides/$(PACKAGE_NAME): $(FULLPATH)/usr/share/lintian/overrides/stepmania
+	cat $(<) | envsubst > $(basename $@)
+
 # changelog must be substituted and compressed
-target/$(FULLPATH)/usr/share/doc/stepmania/changelog.Debian.gz: $(FULLPATH)/usr/share/doc/stepmania/changelog.Debian
+target/$(FULLPATH)/usr/share/doc/$(PACKAGE_NAME)/changelog.Debian.gz: $(FULLPATH)/usr/share/doc/stepmania/changelog.Debian
+	mkdir -p $(shell dirname $@)
 	cat $(<) | envsubst > $(basename $@)
 	gzip --no-name -9 $(basename $@)
+
+# copyright gets renamed
+target/$(FULLPATH)/usr/share/doc/$(PACKAGE_NAME)/copyright: $(FULLPATH)/usr/share/doc/stepmania/copyright
+	cp $(<) $@
 
 # manpages must be compressed
 target/$(FULLPATH)/usr/share/man/man6/stepmania.6.gz: $(FULLPATH)/usr/share/man/man6/stepmania.6
@@ -86,6 +124,16 @@ packages:
 		binutils \
 		lintian
 
+.PHONY: validate
+validate:
+	@if [ "x" = "x$(RPI_MODEL)" ]; then \
+		echo "ERROR: Unrecognized Raspberry Pi model. Run 'make RPI_MODEL=<model>' if you know which RPi you compiled for."; \
+		./rpi-hw-info/rpi-hw-info.py; \
+		exit 1; \
+	fi
+
 .PHONY: clean
 clean:
 	rm -rf target
+
+endif

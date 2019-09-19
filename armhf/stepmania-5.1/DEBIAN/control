@@ -1,4 +1,4 @@
-Package: stepmania
+Package: $PACKAGE_NAME
 Version: $STEPMANIA_VERSION
 Section: contrib/games
 Priority: optional
@@ -6,7 +6,7 @@ Architecture: $ARCH
 Depends: $STEPMANIA_DEPS
 Maintainer: Matthias Rozensztok <SpottyMatt@gmail.com>
 Description: Advanced cross-platform rhythm game for home and arcade use.
- This package was specifically built for the Raspberry Pi platform.
+ This package was specifically built for the Raspberry Pi $RPI_MODEL platform.
  For more information about the process used to create this package,
  visit https://github.com/SpottyMatt/raspbian-stepmania-deb
 Homepage: https://github.com/stepmania/stepmania
