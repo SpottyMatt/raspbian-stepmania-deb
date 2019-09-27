@@ -23,10 +23,10 @@ Head over to the [releases](https://github.com/SpottyMatt/stepmania-raspi-deb/re
 Installation Instructions
 -------------------------
 
-1. Download the correct `.deb` package for your Raspbian distribution
-	* You run `cat /etc/os-release` and look for the `VERSION_CODENAME` to check
-2. Run `sudo dpkg --install stepmania....deb` to install
-3. Run `sudo apt-get install --fix-broken` (may not always be necessary; do it anyway to be safe)
+1. Download the correct `.deb` package for your Raspbian distribution & Raspberry Pi hardware
+	* You run `cat /etc/os-release` and look for the `VERSION_CODENAME` to check the Raspbian distro
+	* Hopefully you know which Raspberry Pi you have!
+2. Run `sudo apt-get install -f ./stepmania.deb`
 3. Done!
 
 Building Binaries
